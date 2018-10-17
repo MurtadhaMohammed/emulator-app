@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Emulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+  <nav>
+    <img src="./logo.png" alt="">
+    <h3>Emulators</h3>
+  </nav>
+  <main>
+    <ul class="list">
+
+    </ul>
+  </main>
+  <footer>
+    CopyRight&copy; 2018 | by murtadha mohammed
+  </footer>
+  <script>
+    const { exec } = require('child_process');
+    var $ = require("jquery");
+    $(document).ready(function () {
+      // const { shell } = require('electron')
+      var path = process.env['ANDROID_HOME'] + '/tools';
+
+      //shell.openExternal(path)
+      exec('emulator -list-avds', { cwd: path }, (error, stdout, stderr) => {
+
+        if (stdout) {
+          data = stdout.split("\n");
+        for (let i = 0; i < data.length-1; i++) {
+          
+          $('.list').append(
+            '<li><p>' + data[i] + '</p><button class="start">Run</button></li>'
+          )
+        }
+        }
+      })
+      $('.list').on('click', '.start', function () {
+         $(this).attr('disabled',true);
+        setTimeout(() => {
+         $(this).attr('disabled',false);
+        }, 5000);
+      
+        var deviceName = $(this).prev('p').html();
+        exec('emulator -avd '+deviceName, { cwd: path }, (error, stdout, stderr) => {
+           if(error){
+              alert("not work!")
+           }
+        })
+        
+      });
+    })
+  </script>
+</body>
+
+</html>
